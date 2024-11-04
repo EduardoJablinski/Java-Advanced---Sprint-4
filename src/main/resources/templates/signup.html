@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{signup.title}">Sign Up</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/signup.js" defer></script>
+</head>
+<body>
+<section>
+    <form action="/req/signup" method="post">
+        <h1 th:text="#{signup.title}">Sign Up</h1>
+        <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="username" name="username" required>
+            <label for="username" th:text="#{signup.name}">Name</label>
+        </div>
+        <div class="inputbox">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" id="email" name="email" required>
+            <label for="email" th:text="#{signup.email}">Email</label>
+        </div>
+
+        <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="password" name="password" required>
+            <label for="password" th:text="#{signup.password}">Password</label>
+        </div>
+        <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="passwordcon" name="passwordcon" required>
+            <label for="passwordcon" th:text="#{signup.confirm.password}">Confirm Password</label>
+        </div>
+        <button id="submit" type="submit" th:text="#{signup.button}">Sign Up</button>
+        <div class="register">
+            <p>
+                <span th:text="#{signup.have.account}">Already have an account?</span>
+                <a href="/req/login" th:text="#{signup.login.link}">Log In</a>
+            </p>
+        </div>
+        <div class="language-selector">
+            <a href="?lang=pt_BR" th:text="#{lang.pt}">Português</a> |
+            <a href="?lang=en" th:text="#{lang.en}">English</a>
+        </div>
+    </form>
+</section>
+
+<script th:inline="javascript">
+    const submitButton = document.getElementById("submit");
+    submitButton.addEventListener('click', (e) => {
+        e.preventDefault(); // Previne o envio do formulário padrão
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('passwordcon').value;
+        const email = document.getElementById('email').value;
+
+        if (!username || !email || !password || !confirmPassword) {
+            alert(/*[[#{signup.fill.all}]]*/ 'Please fill all fields');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert(/*[[#{signup.passwords.mismatch}]]*/ 'Passwords do not match');
+            return;
+        }
+
+        const data = {
+            username,
+            email,
+            password
+        };
+
+        fetch('/req/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/req/login';
+                } else {
+                    throw new Error('Signup failed');
+                }
+            })
+            .catch(error => {
+                alert(/*[[#{signup.error}]]*/ 'An error occurred during signup');
+            });
+    });
+</script>
+</body>
+</html>

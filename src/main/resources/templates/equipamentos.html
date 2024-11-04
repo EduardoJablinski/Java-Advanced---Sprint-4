@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <title th:text="#{equipment.title}">Equipamentos</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="language-selector">
+    <a href="?lang=pt_BR" th:text="#{lang.pt}">Português</a> |
+    <a href="?lang=en" th:text="#{lang.en}">English</a>
+</div>
+<div class="container">
+    <h1 th:text="#{equipment.title}">Equipamentos</h1>
+    <!-- Success message if exists -->
+    <div th:if="${mensagemSucesso}" class="mensagem-sucesso">
+        <p th:text="${mensagemSucesso}"></p>
+    </div>
+
+    <!-- Form to create new equipment -->
+    <form action="#" th:action="@{/api/equipamentos}" method="post">
+        <input type="text" name="nomeEquipamento" th:placeholder="#{equipment.form.name}" required/>
+        <input type="text" name="tipoEquipamento" th:placeholder="#{equipment.form.type}" required/>
+        <input type="text" name="localizacaoEquipamento" th:placeholder="#{equipment.form.location}" required/>
+        <input type="date" name="dataInstalacaoEquipamento" th:placeholder="#{equipment.form.installationDate}" required/>
+        <input type="text" name="estadoEquipamento" th:placeholder="#{equipment.form.state}" required/>
+        <input type="number" name="empresaId" th:placeholder="#{equipment.form.companyId}" required/>
+        <button type="submit" th:text="#{equipment.form.submit}">Adicionar Equipamento</button>
+    </form>
+
+    <!-- Equipment list -->
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{equipment.table.id}">ID</th>
+            <th th:text="#{equipment.table.company}">Empresa</th>
+            <th th:text="#{equipment.table.name}">Nome</th>
+            <th th:text="#{equipment.table.type}">Tipo</th>
+            <th th:text="#{equipment.table.location}">Localização</th>
+            <th th:text="#{equipment.table.installationDate}">Data de Instalação</th>
+            <th th:text="#{equipment.table.state}">Estado</th>
+            <th th:text="#{equipment.table.actions}">Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="equipamento : ${equipamentos}">
+            <td th:text="${equipamento.idEquipamento}"></td>
+            <td th:text="${equipamento.empresa.nome}"></td>
+            <td th:text="${equipamento.nomeEquipamento}"></td>
+            <td th:text="${equipamento.tipoEquipamento}"></td>
+            <td th:text="${equipamento.localizacaoEquipamento}"></td>
+            <td th:text="${#dates.format(equipamento.dataInstalacaoEquipamento, 'dd/MM/yyyy')}"></td>
+            <td th:text="${equipamento.estadoEquipamento}"></td>
+            <td>
+                <!-- Form to delete equipment -->
+                <form action="#" th:action="@{/api/equipamentos/{id}(id=${equipamento.idEquipamento})}" method="post" class="delete-form">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-danger" th:text="#{equipment.action.delete}">Deletar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <a href="/dashboard" class="button" th:text="#{equipment.action.back}">Voltar ao Dashboard</a>
+</div>
+
+</body>
+</html>

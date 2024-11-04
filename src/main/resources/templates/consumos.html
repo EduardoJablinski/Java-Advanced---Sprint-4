@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <title th:text="#{consumo.title}">Consumos</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function buscarSomaConsumo(event) {
+            event.preventDefault();
+
+            const nomeEquipamento = document.getElementById('nomeEquipamento').value;
+
+            fetch(`/api/consumo/soma?nomeEquipamento=${encodeURIComponent(nomeEquipamento)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalConsumo').innerText = data;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    document.getElementById('totalConsumo').innerText = 'Erro ao buscar o total.';
+                });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="#{consumo.title}">Consumos</h1>
+
+    <!-- Seletor de idioma -->
+    <div class="language-selector">
+        <a href="?lang=pt_BR" th:text="#{lang.pt}">Português</a> |
+        <a href="?lang=en" th:text="#{lang.en}">English</a>
+    </div>
+
+    <!-- Formulário para buscar o total de consumo pelo nome do equipamento -->
+    <form onsubmit="buscarSomaConsumo(event)">
+        <input type="text" id="nomeEquipamento" name="nomeEquipamento" th:placeholder="#{consumo.search.placeholder}" required />
+        <button type="submit" th:text="#{consumo.search.button}">Buscar Soma</button>
+    </form>
+
+    <!-- Exibir a soma total -->
+    <div>
+        <p th:text="#{consumo.total}">Total de Consumo para o Equipamento: <span id="totalConsumo">0</span></p>
+    </div>
+
+    <!-- Formulário para adicionar um novo consumo -->
+    <form action="#" th:action="@{/api/consumo}" method="post">
+        <input type="date" name="dataConsumo" th:placeholder="#{consumo.date.placeholder}" required />
+        <input type="number" name="quantidadeConsumo" th:placeholder="#{consumo.quantity.placeholder}" step="0.01" required />
+        <input type="text" name="tipoEnergiaConsumo" th:placeholder="#{consumo.energyType.placeholder}" required />
+        <input type="number" name="emissaoGasConsumo" th:placeholder="#{consumo.gasEmission.placeholder}" step="0.01" required />
+        <input type="number" name="equipamentoId" th:placeholder="#{consumo.equipmentId.placeholder}" required/>
+        <button type="submit" th:text="#{consumo.add.button}">Adicionar Consumo</button>
+    </form>
+
+    <!-- Lista de consumos -->
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{consumo.table.id}">ID</th>
+            <th th:text="#{consumo.table.equipment}">Equipamento</th>
+            <th th:text="#{consumo.table.date}">Data</th>
+            <th th:text="#{consumo.table.quantity}">Quantidade</th>
+            <th th:text="#{consumo.table.energyType}">Tipo de Energia</th>
+            <th th:text="#{consumo.table.gasEmission}">Emissão de Gás</th>
+            <th th:text="#{consumo.table.actions}">Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="consumo : ${consumos}">
+            <td th:text="${consumo.idConsumo}"></td>
+            <td th:text="${consumo.equipamento.nomeEquipamento}"></td>
+            <td th:text="${#dates.format(consumo.dataConsumo, 'dd/MM/yyyy')}"></td>
+            <td th:text="${consumo.quantidadeConsumo}"></td>
+            <td th:text="${consumo.tipoEnergiaConsumo}"></td>
+            <td th:text="${consumo.emissaoGasConsumo}"></td>
+            <td>
+                <form action="#" th:action="@{/api/consumo/{idConsumo}(idConsumo=${consumo.idConsumo})}" method="post" class="delete-form">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-danger" th:text="#{consumo.delete.button}">Deletar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/dashboard" class="button" th:text="#{consumo.back}">Voltar ao Dashboard</a>
+</div>
+</body>
+</html>

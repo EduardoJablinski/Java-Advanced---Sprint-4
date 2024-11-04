@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{app.dashboard}">Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="language-selector">
+    <a href="?lang=pt_BR">Português</a> |
+    <a href="?lang=en">English</a>
+</div>
+
+<div class="container">
+    <h1 th:text="#{app.dashboard}">Dashboard</h1>
+
+    <nav>
+        <a href="/dashboard/empresas" class="button" th:text="#{nav.empresas}">Empresas</a>
+        <a href="/dashboard/equipamentos" class="button" th:text="#{nav.equipamentos}">Equipamentos</a>
+        <a href="/dashboard/consumos" class="button" th:text="#{nav.consumos}">Consumos</a>
+    </nav>
+
+    <div th:if="${message}" class="message" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="chatbot">
+        <h2>Assistente Virtual</h2>
+        <div id="chat-log" class="chat-log">
+            <div th:each="chatMessage : ${chatMessages}"
+                 th:text="${chatMessage}"
+                 th:class="${chatMessage.startsWith('Você:') ? 'user-message' : 'bot-message'}">
+            </div>
+        </div>
+        <form th:action="@{/chat}" method="post" id="chat-form">
+            <input type="text"
+                   name="userMessage"
+                   placeholder="Digite sua mensagem..."
+                   autocomplete="off"
+                   required />
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const chatLog = document.getElementById('chat-log');
+    if (chatLog) {
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+</script>
+</body>
+</html>

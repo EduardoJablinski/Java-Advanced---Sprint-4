@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{companies.title}">Empresas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="#{companies.title}">Empresas</h1>
+
+    <div class="language-selector">
+        <a href="?lang=pt_BR" th:text="#{lang.pt}">Português</a> |
+        <a href="?lang=en" th:text="#{lang.en}">English</a>
+    </div>
+
+    <!-- Formulário de Pesquisa -->
+    <form action="#" th:action="@{/admin/empresas}" method="get" class="search-form">
+        <input type="text" name="nome" th:placeholder="#{companies.search.placeholder}" />
+        <button type="submit" class="btn" th:text="#{companies.search.button}">Buscar</button>
+    </form>
+    <br>
+
+    <!-- Formulário para Criar Nova Empresa -->
+    <h2 th:text="#{companies.create.title}">Criar Nova Empresa</h2>
+    <form action="#" th:action="@{/admin/empresas}" method="post" class="create-form">
+        <input type="text" id="nome" name="nome" th:placeholder="#{companies.name.placeholder}" required />
+        <input type="text" id="setorIndustrial" name="setorIndustrial" th:placeholder="#{companies.sector.placeholder}" required />
+        <input type="text" id="localizacao" name="localizacao" th:placeholder="#{companies.location.placeholder}" required />
+        <input type="text" id="tipo" name="tipo" th:placeholder="#{companies.type.placeholder}" required />
+        <input type="text" id="conformidadeRegular" name="conformidadeRegular" th:placeholder="#{companies.compliance.placeholder}" required />
+        <button type="submit" class="btn" th:text="#{companies.create.button}">Criar Empresa</button>
+    </form>
+
+    <!-- Lista de Empresas -->
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{companies.table.id}">ID</th>
+            <th th:text="#{companies.table.name}">Nome</th>
+            <th th:text="#{companies.table.sector}">Setor Industrial</th>
+            <th th:text="#{companies.table.location}">Localização</th>
+            <th th:text="#{companies.table.type}">Tipo</th>
+            <th th:text="#{companies.table.compliance}">Conformidade Regular</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="empresa : ${empresas}">
+            <td th:text="${empresa.id}"></td>
+            <td th:text="${empresa.nome}"></td>
+            <td th:text="${empresa.setorIndustrial}"></td>
+            <td th:text="${empresa.localizacao}"></td>
+            <td th:text="${empresa.tipo}"></td>
+            <td th:text="${empresa.conformidadeRegular}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+
+    <!-- Formulário para Deletar uma Empresa -->
+    <h2 th:text="#{companies.delete.title}">Deletar Empresa</h2>
+    <form action="#" th:action="@{/admin/empresas/delete}" method="post" class="delete-form">
+        <label for="deleteId" th:text="#{companies.delete.id}">ID da Empresa:</label>
+        <input type="number" id="deleteId" name="id" required />
+        <button type="submit" class="btn btn-danger" th:text="#{companies.delete.button}">Deletar Empresa</button>
+    </form>
+
+    <br>
+
+    <a href="#" th:href="@{/dashboard}" class="button" th:text="#{companies.back}">Voltar para o Dashboard</a>
+</div>
+</body>
+</html>

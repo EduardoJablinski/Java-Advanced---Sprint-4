@@ -1,0 +1,21 @@
+package iasi.repository;
+
+import iasi.model.Equipamento;
+import java.util.List;
+
+public interface EquipamentoRepository {
+    int save(Equipamento book);
+
+    Equipamento findById(long id);
+
+    int deleteById(long id);
+
+    List<Equipamento> findByEmpresaId(long idEmpresa);
+
+    List<Equipamento> findAll();
+
+    int deleteAll();
+
+    List<Equipamento> findByNameContaining(String nomeEquipamento);
+
+}
